@@ -1,5 +1,3 @@
-#include <utility>
-
 #include "roman.h"
 
 Pair::Pair(std::string n, int v) {
@@ -28,10 +26,14 @@ int Name_pairs::size() {
     return (int) arr.size();
 }
 
+Name_pairs::~Name_pairs() {
+    this->arr.clear();
+}
+
 std::istream &operator>>(std::istream &is, Roman_int &r) {
     std::string buf;
     is >> buf;
-    r.val = Roman_int::roman_to_int(buf);
+    r.val = Roman_int::roman_str_to_int(buf);
     return is;
 }
 
@@ -39,7 +41,6 @@ std::ostream &operator<<(std::ostream &os, const Roman_int &r) {
     os << r.as_roman();
     return os;
 }
-
 
 int Roman_int::sym_to_int(char c) {
     switch (c) {
@@ -61,9 +62,7 @@ int Roman_int::sym_to_int(char c) {
             return 1000;
         default :
             return -1;
-
     }
-
 }
 
 Roman_int::Roman_int(int i) : val(i) {
@@ -71,7 +70,7 @@ Roman_int::Roman_int(int i) : val(i) {
 }
 
 Roman_int::Roman_int(std::string str) {
-    this->val = Roman_int::roman_to_int(std::move(str));
+    this->val = Roman_int::roman_str_to_int(std::move(str));
     this->prepare_digits();
 }
 
@@ -161,7 +160,7 @@ void Roman_int::prepare_digits() {
     }
 }
 
-int Roman_int::roman_to_int(std::string str) {
+int Roman_int::roman_str_to_int(std::string str) {
     int r = 0;
     str.push_back('0');
     for (int i = (int) str.size() - 2; i >= 0; --i) {
@@ -220,4 +219,3 @@ int Roman_int::roman_to_int(std::string str) {
     }
     return r;
 }
-
