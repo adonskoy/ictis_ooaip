@@ -3,4 +3,4 @@ project(lab_1)
 
 set(CMAKE_CXX_STANDARD 17)
 
-add_executable(main.cpp figure.cpp roman.h main.cpp)
+add_executable(main.cpp main.cpp roman.h roman.cpp)

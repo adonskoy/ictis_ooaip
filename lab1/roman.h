@@ -7,19 +7,18 @@
 #include <vector>
 #include <utility>
 
-using namespace std;
 
 struct Pair {
-    string name;
+    std::string name;
     int val;
 
-    Pair(string n, int v);
+    Pair(std::string n, int v);
 };
 
 
 class Name_pairs {
 private:
-    vector<Pair> arr;
+    std::vector<Pair> arr;
 public:
 
     friend class Iterator;
@@ -42,7 +41,7 @@ public:
 };
 
 
-inline void error(const string &msg);
+inline void error(const std::string &msg);
 
 class Roman_int {
 private:
@@ -50,12 +49,18 @@ private:
 
     static int sym_to_int(char c);
 
+    void prepare_digits();
+
 public:
     explicit Roman_int(int i = 0);
 
+    explicit Roman_int(std::string str);
+
     int as_int() const;
 
-    string as_roman() const;
+    std::string as_roman() const;
+
+    static int roman_to_int(std::string str);
 
     static Name_pairs digits;
 
@@ -81,7 +86,6 @@ public:
 
 };
 
-Name_pairs Roman_int::digits{};
 
 std::istream &operator>>(std::istream &is, Roman_int &r);
 
