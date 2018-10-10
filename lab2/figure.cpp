@@ -1,14 +1,8 @@
-//
-// Created by Антон Донской on 11/09/2018.
-//
-
 #include "figure.h"
-
 
 std::string Figure::getType() {
     return "Figure";
 }
-
 
 double Rectangle::getSquare() {
     return Line(this->p1, this->p2).getLenght() * Line(this->p2, this->p3).getLenght();
@@ -30,12 +24,19 @@ Point Rectangle::getCenterOfMass() {
 }
 
 Rectangle::Rectangle(Point a, Point b, Point c, Point d) {
-    p1 = a;
-    p2 = b;
-    p3 = c;
-    p4 = d;
+    Line ab(a, b);
+    Line bc(b, c);
+    Line cd(c, d);
+    Line da(d, a);
+    if ((ab.isParallel(cd) && !ab.isEquivalent(cd)) && (bc.isParallel(da) && !bc.isEquivalent(da))) {
+        p1 = a;
+        p2 = b;
+        p3 = c;
+        p4 = d;
+    } else {
+        throw ("It's not a rectangle");
+    }
 }
-
 
 double Line::getLenght() {
     return sqrt(pow(this->p2.x - this->p1.x, 2) + pow(this->p2.y - this->p1.y, 2));
@@ -90,7 +91,6 @@ Point *Line::getCenter() {
     return res;
 }
 
-
 double Circle::getSquare() {
     return M_PI * (this->radius) * (this->radius);
 }
@@ -107,6 +107,14 @@ std::string Circle::getType() {
     return "Circle";
 }
 
+Circle::Circle(Point center, double radius) {
+    if (radius <= 0) {
+        throw ("Radius should be more than 0");
+    }
+    this->center = center;
+    this->radius = radius;
+}
+
 double Triangle::getSquare() {
     return (1. / 2) * abs(
             (this->p1.x - this->p3.x) * (this->p2.y - this->p3.y)
@@ -120,7 +128,6 @@ double Triangle::getPerimeter() {
             Line(p1, p3).getLenght() +
             Line(p2, p3).getLenght()
     );
-
 }
 
 Point Triangle::getCenterOfMass() {
@@ -153,14 +160,12 @@ double Trapeze::getPerimeter() {
             Line(p4, p1).getLenght() +
             Line(p2, p3).getLenght()
     );
-
 }
 
 Point Trapeze::getCenterOfMass() {
     Line a(this->p2, this->p3);
     Line b(this->p1, this->p4);
     Line center(*a.getCenter(), *b.getCenter());
-
 
     double h = abs(b.p1.y - a.p1.y);
     double y = h / 3 * ((2 * b.getLenght() + a.getLenght()) / (b.getLenght() + a.getLenght()));
@@ -188,26 +193,73 @@ Trapeze::Trapeze(Point a, Point b, Point c, Point d) {
 }
 
 void Picture::push(Figure *ob) {
-
-    this->arrr.push_back(ob);
+    this->figures.push_back(ob);
 }
 
-void Picture::print() {
-
-    for (const auto &i:this->arrr) {
-        std::cout << i->getType() << " ";
+void Picture::printTypes() {
+    std::cout << "Types: " << std::endl;
+    for (const auto &i:this->figures) {
+        std::cout << "\t" << i->getType() << std::endl;
     }
     std::cout << "\n";
 }
 
-double Picture::getSquare() {
-    return 0;
+std::vector<std::pair<std::string, double>> Picture::getSquares() {
+    std::vector<std::pair<std::string, double>> res;
+    for (auto figure: this->figures) {
+        std::pair<std::string, double> tmp;
+        tmp.first = figure->getType();
+        tmp.second = figure->getSquare();
+        res.push_back(tmp);
+    }
+    return res;
 }
 
-Point Picture::getCenterOfMass() {
-    return Point();
+std::vector<std::pair<std::string, Point>> Picture::getCenterOfMasss() {
+    std::vector<std::pair<std::string, Point>> res;
+    for (auto figure: this->figures) {
+        std::pair<std::string, Point> tmp;
+        tmp.first = figure->getType();
+        tmp.second = figure->getCenterOfMass();
+        res.push_back(tmp);
+    }
+    return res;
 }
 
-double Picture::getPerimeter() {
-    return 0;
+std::vector<std::pair<std::string, double>> Picture::getPerimeters() {
+    std::vector<std::pair<std::string, double>> res;
+    for (auto figure: this->figures) {
+        std::pair<std::string, double> tmp;
+        tmp.first = figure->getType();
+        tmp.second = figure->getPerimeter();
+        res.push_back(tmp);
+    }
+    return res;
+}
+
+void Picture::printSquares() {
+    auto Squares = this->getSquares();
+    std::cout << "Squares:" << std::endl;
+    for (auto figure: Squares) {
+        std::cout << "\t" << figure.first << ": " << figure.second << std::endl;
+    }
+    std::cout << "\n";
+}
+
+void Picture::printCenterOfMasss() {
+    auto CenterOfMasss = this->getCenterOfMasss();
+    std::cout << "Center of mass:" << std::endl;
+    for (auto figure: CenterOfMasss) {
+        std::cout << "\t" << figure.first << ": " << figure.second.x << ", " << figure.second.y << std::endl;
+    }
+    std::cout << "\n";
+}
+
+void Picture::printPerimeters() {
+    auto Perimeters = this->getPerimeters();
+    std::cout << "Perimetres:" << std::endl;
+    for (auto figure: Perimeters) {
+        std::cout << "\t" << figure.first << ": " << figure.second << std::endl;
+    }
+    std::cout << "\n";
 }
