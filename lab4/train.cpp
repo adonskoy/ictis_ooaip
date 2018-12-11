@@ -3,7 +3,7 @@
 //
 #include "train.h"
 
-void Train::set(const std::string &dest, int num, DateTime dep, DateTime arr) {
+Train::Train(const std::string &dest, int num, DateTime dep, DateTime arr) {
     if (!dest.empty()) {
         this->_destination = dest;
     }
@@ -25,18 +25,24 @@ void Train::set(const std::string &dest, int num, DateTime dep, DateTime arr) {
     }
 }
 
-int Train::getNumber() {
+int Train::getNumber() const {
     return this->_number;
 }
 
-std::string Train::getDestination() {
+std::string Train::getDestination() const {
     return this->_destination;
 }
 
-DateTime Train::getDeparture() {
+DateTime Train::getDeparture() const {
     return this->_departure;
 }
 
-DateTime Train::getArrival() {
+DateTime Train::getArrival() const {
     return this->_arrival;
+}
+
+Train::Train(DateTime arr) {
+    if (arr != DateTime{}) {
+        this->_arrival = arr;
+    }
 }
