@@ -4,6 +4,7 @@
 #include "algorithm"
 #include <iterator>
 #include <vector>
+#include <map>
 
 #ifndef LAB_3_TRAIN_H
 #define LAB_3_TRAIN_H
@@ -17,9 +18,7 @@ private:
     DateTime _departure;
     DateTime _arrival;
 public:
-    Train(const std::string &dest = "", int num = NULL, DateTime dep = DateTime{}, DateTime arr = DateTime{});
-
-    Train(DateTime arr = DateTime{});
+    Train(std::string dest = "", int num = NULL, DateTime dep = DateTime{}, DateTime arr = DateTime{});
 
     int getNumber() const;
 
@@ -30,28 +29,28 @@ public:
     DateTime getArrival() const;
 };
 
-bool operator==(const Train &TR1, const Train &TR2) {
+static bool operator==(const Train &TR1, const Train &TR2) {
     return TR1.getArrival() == TR2.getArrival();
 }
 
-bool operator<=(const Train &TR1, const Train &TR2) {
+static bool operator<=(const Train &TR1, const Train &TR2) {
     return TR1.getArrival() <= TR2.getArrival();
 }
 
-bool operator>(const Train &TR1, const Train &TR2) {
+static bool operator>(const Train &TR1, const Train &TR2) {
     return TR1.getArrival() > TR2.getArrival();
 }
 
-bool operator>=(const Train &TR1, const Train &TR2) {
+static bool operator>=(const Train &TR1, const Train &TR2) {
     return TR1.getArrival() >= TR2.getArrival();
 }
 
-bool operator<(const Train &TR1, const Train &TR2) {
+static bool operator<(const Train &TR1, const Train &TR2) {
     return TR1.getArrival() < TR2.getArrival();
 }
 
 
-bool operator!=(const Train &TR1, const Train &TR2) {
+static bool operator!=(const Train &TR1, const Train &TR2) {
     return TR1.getArrival() != TR2.getArrival();
 }
 
@@ -61,35 +60,20 @@ private:
     std::vector<Train> _trains;
     bool inited = false;
 public:
-    void input(std::istream &inp = std::cin) {
-        if (this->inited) {
-            throw "Trains was inputted earlier";
-        } else {
-            int n;
-            inp >> n;
-            for (int i(0); i < n; ++i) {
-                std::string tmp_dest;
-                int tmp_num;
-                DateTime tmp_dep{}, tmp_arr{};
-                inp >> tmp_dest >> tmp_num >> tmp_dep >> tmp_arr;
-                Train tmp_tr(tmp_dest, tmp_num, tmp_dep, tmp_arr);
-                this->_trains.push_back(tmp_tr);
-            }
-        }
+    void input(std::istream &inp = std::cin);
 
-        this->inited = true;
-        std::sort(this->_trains.begin(), this->_trains.end());
-    }
-
-    std::vector<Train> getLater(DateTime dt) {
-        auto it = this->_trains.begin();
-        while (it != this->_trains.end()) {
-            if (it->getArrival() >= dt) {
-                return std::vector<Train>(it, this->_trains.end());
-            }
-        }
-        return std::vector<Train>();
-    }
+    std::vector<Train> getLater(DateTime dt);
 };
 
 
+
+
+class TrainsFromMap {
+private:
+    std::multimap<DateTime, Train> _trains;
+    bool inited = false;
+public:
+    void input(std::istream &inp = std::cin);
+
+    std::multimap<DateTime, Train> getLater(DateTime dt);
+};

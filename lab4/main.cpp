@@ -1,17 +1,53 @@
-//
-// Created by Антон Донской on 2018-12-10.
-//
-
 #include "train.h"
 
+int from_vector(std::fstream &fs, DateTime later_t) {
 
-int main() {
     TrainsFromVector tr1;
-    tr1.input();
-    std::vector<Train> a = tr1.getLater(DateTime{Date{1, 12, 2018}, Time{12, 0, 0}});
+    tr1.input(fs);
+
+    auto a = tr1.getLater(later_t);
+
     for (auto i:a) {
         std::cout << i.getNumber() << " " << i.getDestination() << " "
                   << "\n";
     }
+
     return 0;
 }
+
+
+int from_map(std::fstream &fs, DateTime later_t) {
+
+    TrainsFromMap tr1;
+    tr1.input(fs);
+
+    auto a = tr1.getLater(later_t);
+
+    for (auto i:a) {
+        std::cout << i.second.getNumber() << " " << i.second.getDestination() << " "
+                  << "\n";
+    }
+
+    return 0;
+}
+
+int main() {
+    int n;
+    std::string filename;
+    DateTime later_t;
+
+    std::cin >> n >> filename >> later_t;
+
+    std::fstream fs;
+    fs.open(filename, std::fstream::in);
+
+    if (n == 1) {
+        from_vector(fs, later_t);
+    } else if (n == 2) {
+        from_map(fs, later_t);
+    } else {
+        return 1;
+    }
+    return 0;
+}
+
