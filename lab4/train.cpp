@@ -58,14 +58,13 @@ void TrainsFromVector::input(std::istream &inp) {
 }
 
 std::vector<Train> TrainsFromVector::getLater(DateTime dt) {
-    auto it = this->_trains.begin();
-    while (it != this->_trains.end()) {
-        if (it->getArrival() >= dt) {
-            return std::vector<Train>(it, this->_trains.end());
-        }
-        it++;
-    }
-    return std::vector<Train>();
+    auto it = std::lower_bound(this->_trains.begin(), this->_trains.end(), dt,
+                               [](const Train a, const DateTime b) {
+                                   return a.getArrival() < b;
+                               }
+    );
+    std::vector<Train> result(it, this->_trains.end());
+    return result;
 }
 
 void TrainsFromMap::input(std::istream &inp) {
